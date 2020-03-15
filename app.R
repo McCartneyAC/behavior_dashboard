@@ -60,24 +60,6 @@ palette1<-c( "#115740",  "#cc5500",  "#00313c", "#e56a54",
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ui <- dashboardPagePlus(
   skin = "red",
   dashboardHeaderPlus(title = "BxDash"),
@@ -109,8 +91,14 @@ ui <- dashboardPagePlus(
     ),
     
     tabItem(tabName = "onestudent", 
+            #TODO: Needs columns layout. 
             fluidRow(
-              boxPlus(tags$p("student graphs go here."))
+              boxPlus(tags$p("student graphs go here."),
+                      selectizeInput("stu_select", "Select A Student", 
+                                     choices = NULL, 
+                                     selected = NULL, 
+                                     multiple = FALSE,
+                                     options = NULL))
               ),
             fluidRow(
               valueBoxOutput("student_points_valuebox"),
@@ -193,6 +181,16 @@ server <- function(input, output, session) {
   })
   
   
+  # create list of students to choose from for student tab.
+  observeEvent(datasetInput(), {
+    updateSelectInput(session, "stu_select", 
+                    
+                      choices = datasetInput()$student
+                      )
+  })
+  
+  
+  
   output$student_points_valuebox <- renderValueBox({
     valueBox(
       "2.11", "Average Daily Points", icon = icon("chart-bar"),
@@ -215,6 +213,17 @@ server <- function(input, output, session) {
     )
   })
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
