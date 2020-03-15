@@ -78,54 +78,29 @@ palette1<-c( "#115740",  "#cc5500",  "#00313c", "#e56a54",
 
 
 
-ui <- dashboardPage(
+ui <- dashboardPagePlus(
   skin = "red",
-  dashboardHeader(title = "BxDash"),
+  dashboardHeaderPlus(title = "BxDash"),
+  
+  
   dashboardSidebar(
     sidebarMenu(id = "sidebar",
       menuItem("About", tabName = "grand_about", icon = icon("book")),
       menuItem("Your Data File", tabName="yourdata", icon = icon("file-upload")),
       menuItem("Individual Students" ,tabName = "onestudent", icon = icon("user-graduate")),
       menuItem("Schoolwide", tabName = "schoolwide", icon = icon("school")),
-      menuItem("Teacher Data", tabName = "teacherdata", icon = icon("chalkboard-teacher")),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      br(),
-      tags$p("Copyright 2020 Andrew McCartney")
-      
+      menuItem("Teacher Data", tabName = "teacherdata", icon = icon("chalkboard-teacher"))
       )   # sidebarmenu
   ), #sidebar
   dashboardBody(
     tabItems(
     tabItem(tabName = "grand_about",
-            box(tags$p("BxDash is a bespoke behavior management tracking tool for northern Virginia special education schools developed by Andrew McCartney. Contact the author for access or to join in the fun."),
+            boxPlus(tags$p("BxDash is a bespoke behavior management tracking tool for northern Virginia special education schools developed by Andrew McCartney. Contact the author for access or to join in the fun."),
                 tags$p(tags$b("confidentiality"), "This app is generated anew every time the server loads and is crashed every time the server times out. That means that uploaded user data are never stored and are refreshed on each use. While that may be annoying (and certainly limits the utility of the application) it means that the app and user data are nearly impossible to hack and cannot be accessed by any other users. Your data are confidential."))),
     
     tabItem(
       tabName = "yourdata",
-      box("BxDash is an opinionated data tool. Your dataset must have the correct structure when uploaded or the analysis will fail and the tool will be useless to you. A primer on the proper data structure goes here: along with a potential image describing the needed variables."),
+      boxPlus("BxDash is an opinionated data tool. Your dataset must have the correct structure when uploaded or the analysis will fail and the tool will be useless to you. A primer on the proper data structure goes here: along with a potential image describing the needed variables."),
       box(
         title = "Upload Student Data",
         fileInput("FileInput", "Input Your Student Data"),
@@ -134,19 +109,33 @@ ui <- dashboardPage(
     ),
     
     tabItem(tabName = "onestudent", 
-            box(tags$p("student graphs go here.")),
-            valueBoxOutput("student_points_valuebox"),
-            box("points trajectory"),
-            box("heatmap"),
-            box("by class")),
+            fluidRow(
+              boxPlus(tags$p("student graphs go here."))
+              ),
+            fluidRow(
+              valueBoxOutput("student_points_valuebox"),
+              valueBoxOutput("avg_daily_TOOL"),
+              valueBoxOutput("days_attended")
+              ),
+            fluidRow(
+            boxPlus("points trajectory"),
+            boxPlus("heatmap"),
+            boxPlus("by class")
+            ) #fluidrow
+            ),#tabItem
     tabItem(tabName = "schoolwide",
-            box("school-wide data graphs go here",
+            boxPlus("school-wide data graphs go here",
             "like faceted trajectory charts"),
-            box("student groupings based on levels (e.g. who is what level)")),
+            boxPlus("Schoolwide TOOL chart goes here (with theoretical minimum?)"),
+            boxPlus("student groupings based on levels (e.g. who is what level)")),
     tabItem(tabName = "teacherdata",
             "unclear as now what this tab will show.")
     )#tabItems
-  ) #body
+  ),
+  footer = dashboardFooter(
+    left_text = "Copyright Andrew McCartney 2020"
+  )
+
 )#page
 
 
@@ -207,10 +196,24 @@ server <- function(input, output, session) {
   output$student_points_valuebox <- renderValueBox({
     valueBox(
       "2.11", "Average Daily Points", icon = icon("chart-bar"),
-      color = "blue"
+      color = "red"
     )
   })
   
+  output$avg_daily_TOOL<- renderValueBox({
+    valueBox(
+      "17.5", "Average Daily Minutes out of Class", icon = icon("clock"),
+      color = "red"
+    )
+  })
+  
+  
+  output$days_attended<- renderValueBox({
+    valueBox(
+      "37", "Total Days Attendance This Quarter", icon = icon("calendar-alt"),
+      color = "red"
+    )
+  })
 }
 
 
